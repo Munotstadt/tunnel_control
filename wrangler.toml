@@ -17,10 +17,10 @@ database_id = "ff087411-b6f3-4a06-9eb5-a43716564bdd"
 
 [vars]
 # Zero Trust > Settings > Custom Pages > Team domain, z. B. "meinteam.cloudflareaccess.com"
-TEAM_DOMAIN = "DEIN-TEAM.cloudflareaccess.com"
+TEAM_DOMAIN = "team8155.cloudflareaccess.com"
 # Access-Application > Overview > Application Audience (AUD) Tag
-POLICY_AUD = ""
+POLICY_AUD = "f7d19509478f1f2ef665df5c5406047262be29292d5e5b7a8145acde197ff0fd"
 # Optional, kommagetrennt. Zusaetzliche Pruefung im Worker (Access-Policy bleibt die Hauptschranke)
-ALLOWED_EMAILS = ""
+ALLOWED_EMAILS = "ph.gnaedinger@gmail.com"
 
 # Secret (nicht hier eintragen):  npx wrangler secret put NAS_TOKEN
