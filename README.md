@@ -7,7 +7,7 @@ Schalter-Seite für Cloudflare-Tunnel. Browser (Google-Login via Cloudflare Acce
 | Worker | `tunnel-control` |
 | Domain | `tunnel.munot.app` |
 | D1 | `tunnel_control` (`ff087411-b6f3-4a06-9eb5-a43716564bdd`), Schema bereits eingespielt |
-| Startwert | Tunnel `nas` (Label "NAS") |
+| Startwert | Tunnel `erp` (Label "ERP") |
 
 ## 1. Google als Login-Methode (Zero Trust)
 
@@ -46,7 +46,7 @@ Die Custom Domain `tunnel.munot.app` legt Wrangler automatisch an (Zone `munot.a
 ```bash
 curl -H "Authorization: Bearer $NAS_TOKEN" https://tunnel.munot.app/nas/state
 curl -X POST -H "Authorization: Bearer $NAS_TOKEN" -H "Content-Type: application/json" \
-  -d '{"tunnels":[{"tunnel_id":"nas","actual":"stopped"}]}' https://tunnel.munot.app/nas/heartbeat
+  -d '{"tunnels":[{"tunnel_id":"erp","actual":"stopped"}]}' https://tunnel.munot.app/nas/heartbeat
 ```
 
 Dann `https://tunnel.munot.app` im Browser öffnen: Google-Login, Karte "NAS" mit Schalter.

@@ -25,4 +25,4 @@ CREATE INDEX IF NOT EXISTS idx_tunnel_log_ts ON tunnel_log (tunnel_id, ts DESC);
 
 -- Weiteren Tunnel anlegen:
 -- INSERT INTO tunnel_state (tunnel_id, label) VALUES ('ha', 'Home Assistant');
-INSERT OR IGNORE INTO tunnel_state (tunnel_id, label) VALUES ('nas', 'NAS');
+INSERT OR IGNORE INTO tunnel_state (tunnel_id, label) VALUES ('erp', 'ERP');

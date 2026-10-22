@@ -1,0 +1,14 @@
+# NAS-Ordner: /volume3/docker_v3/erp_tunnel
+# cloudflared fuer den Tunnel 'erp'. Wird vom Poller gestartet und gestoppt.
+# Der Container-Name MUSS cf-tunnel-<tunnel_id> lauten (tunnel_id aus D1).
+services:
+  cf-tunnel-erp:
+    image: cloudflare/cloudflared:latest
+    container_name: cf-tunnel-erp
+    # "no": nach einem NAS-Neustart bleibt der Tunnel zu, bis er geoeffnet wird
+    restart: "no"
+    command: tunnel --no-autoupdate run
+    # host: 'localhost' im Tunnel meint das NAS selbst
+    network_mode: host
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
