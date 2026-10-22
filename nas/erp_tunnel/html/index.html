@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ERP Tunnel Test</title>
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f6f5f1;color:#1f1f1d;font:16px/1.5 system-ui,sans-serif}
+main{background:#fff;border:1px solid #e1dfd6;border-radius:12px;padding:24px 32px;max-width:420px}
+h1{font-size:22px;font-weight:500;margin:0 0 8px}
+p{margin:6px 0;color:#6b6a65}
+.ok{color:#1d7a4f;font-weight:500}
+@media (prefers-color-scheme:dark){body{background:#161614;color:#efeee9}main{background:#222220;border-color:#34332f}p{color:#9c9a92}.ok{color:#6fd1a0}}
+</style>
+</head>
+<body>
+<main>
+<h1>ERP Tunnel Test</h1>
+<p class="ok">Der Tunnel ist offen.</p>
+<p>Diese Seite liegt auf dem NAS und wird über Cloudflare Tunnel ausgeliefert.</p>
+<p id="t"></p>
+</main>
+<script>
+document.getElementById('t').textContent = 'Abgerufen: ' + new Date().toLocaleString('de-CH', { timeZone: 'Europe/Zurich' });
+</script>
+</body>
+</html>
