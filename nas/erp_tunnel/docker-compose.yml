@@ -1,6 +1,8 @@
 # NAS-Ordner: /volume3/docker_v3/erp_tunnel
-# cloudflared fuer den Tunnel 'erp'. Wird vom Poller gestartet und gestoppt.
-# Der Container-Name MUSS cf-tunnel-<tunnel_id> lauten (tunnel_id aus D1).
+# cf-tunnel-erp: cloudflared fuer den Tunnel 'erp', wird vom Poller gestartet/gestoppt.
+#   Der Container-Name MUSS cf-tunnel-<tunnel_id> lauten (tunnel_id aus D1).
+# erp-app: ERP-Front-End (Node/Express), laeuft dauerhaft, nur lokal auf 127.0.0.1:13000.
+#   Im Tunnel als Public Hostname: erp.munot.app -> http://localhost:13000
 services:
   cf-tunnel-erp:
     image: cloudflare/cloudflared:latest
@@ -13,14 +15,11 @@ services:
     environment:
       TUNNEL_TOKEN: ${TUNNEL_TOKEN}
 
-  # Testseite, nur lokal erreichbar (127.0.0.1:18081), nicht im LAN.
-  # Im Tunnel als Public Hostname: erp.munot.app -> http://localhost:18081
-  # Laeuft dauerhaft, der Poller schaltet nur cf-tunnel-*.
-  erp-test:
-    image: nginx:alpine
-    container_name: erp-test
+  erp-app:
+    build: ./app
+    image: munotstadt-erp:latest
+    container_name: erp-app
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:18081:80"
-    volumes:
-      - ./html:/usr/share/nginx/html:ro
+    # host: erreicht die DB ueber die NAS-IP, bindet 127.0.0.1 des NAS
+    network_mode: host
+    env_file: ./erp_app.env
