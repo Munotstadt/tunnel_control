@@ -1,0 +1,26 @@
+name = "tunnel-control"
+main = "index.js"
+compatibility_date = "2026-10-01"
+
+# Nur ueber die eigene Domain erreichbar (Access schuetzt nur diese)
+workers_dev = false
+preview_urls = false
+
+routes = [
+  { pattern = "tunnel.munot.app", custom_domain = true }
+]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tunnel_control"
+database_id = "ff087411-b6f3-4a06-9eb5-a43716564bdd"
+
+[vars]
+# Zero Trust > Settings > Custom Pages > Team domain, z. B. "meinteam.cloudflareaccess.com"
+TEAM_DOMAIN = "DEIN-TEAM.cloudflareaccess.com"
+# Access-Application > Overview > Application Audience (AUD) Tag
+POLICY_AUD = ""
+# Optional, kommagetrennt. Zusaetzliche Pruefung im Worker (Access-Policy bleibt die Hauptschranke)
+ALLOWED_EMAILS = ""
+
+# Secret (nicht hier eintragen):  npx wrangler secret put NAS_TOKEN
