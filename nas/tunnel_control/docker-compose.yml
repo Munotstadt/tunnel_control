@@ -9,6 +9,8 @@ services:
     environment:
       WORKER_URL: https://tunnel.munot.app
       NAS_TOKEN: ${NAS_TOKEN}
+      CF_ACCESS_CLIENT_ID: ${CF_ACCESS_CLIENT_ID:-}
+      CF_ACCESS_CLIENT_SECRET: ${CF_ACCESS_CLIENT_SECRET:-}
       POLL_SECONDS: "30"
       FAIL_STOP_AFTER: "3"
       TZ: Europe/Zurich

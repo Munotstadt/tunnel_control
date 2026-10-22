@@ -23,7 +23,10 @@ Empfehlung: Auch den öffentlichen Hostname mit einer Access-Application (Google
 `docker-compose.yml`, `poller.py`, `.env` (aus `.env.example`)
 ```
 NAS_TOKEN=<gleicher Wert wie das Worker-Secret>
+CF_ACCESS_CLIENT_ID=<Client ID des Service Tokens>
+CF_ACCESS_CLIENT_SECRET=<Client Secret des Service Tokens>
 ```
+Die beiden `CF_ACCESS_*` Werte sind optional. Sie werden gebraucht, sobald die Access-App für `nas/*` auf Service Auth statt Bypass steht (siehe Haupt-README).
 
 **cloudflared** nach `/volume3/docker_v3/erp_tunnel/`:
 `docker-compose.yml`, `.env` (aus `.env.example`)

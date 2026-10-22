@@ -27,6 +27,9 @@ FAIL_STOP_AFTER = int(os.environ.get("FAIL_STOP_AFTER", "3"))
 PREFIX = os.environ.get("CONTAINER_PREFIX", "cf-tunnel-")
 DOCKER_SOCK = os.environ.get("DOCKER_SOCK", "/var/run/docker.sock")
 USER_AGENT = "tunnel-poller/1.0"
+# Optional: Cloudflare Access Service Token (Policy-Action "Service Auth" fuer nas/*)
+CF_ACCESS_ID = os.environ.get("CF_ACCESS_CLIENT_ID", "")
+CF_ACCESS_SECRET = os.environ.get("CF_ACCESS_CLIENT_SECRET", "")
 
 
 def log(msg):
@@ -99,6 +102,9 @@ def api(method, path, payload=None):
     req = urllib.request.Request(WORKER_URL + path, data=data, method=method)
     req.add_header("Authorization", f"Bearer {NAS_TOKEN}")
     req.add_header("User-Agent", USER_AGENT)
+    if CF_ACCESS_ID and CF_ACCESS_SECRET:
+        req.add_header("CF-Access-Client-Id", CF_ACCESS_ID)
+        req.add_header("CF-Access-Client-Secret", CF_ACCESS_SECRET)
     if data is not None:
         req.add_header("Content-Type", "application/json")
     with urllib.request.urlopen(req, timeout=10) as resp:
@@ -144,7 +150,8 @@ def main():
     if not WORKER_URL or not NAS_TOKEN:
         log("WORKER_URL und NAS_TOKEN muessen gesetzt sein")
         sys.exit(1)
-    log(f"Start: {WORKER_URL}, alle {POLL_SECONDS}s, Failsafe nach {FAIL_STOP_AFTER} Fehlern")
+    svc = "mit" if (CF_ACCESS_ID and CF_ACCESS_SECRET) else "ohne"
+    log(f"Start: {WORKER_URL}, alle {POLL_SECONDS}s, Failsafe nach {FAIL_STOP_AFTER} Fehlern, {svc} Access Service Token")
 
     fails = 0
     while True:

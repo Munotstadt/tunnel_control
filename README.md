@@ -22,10 +22,13 @@ Schalter-Seite für Cloudflare-Tunnel. Browser (Google-Login via Cloudflare Acce
 - Identity providers: nur Google
 - Danach den **Application Audience (AUD) Tag** kopieren
 
-**App 2: NAS-Pfad (Bypass)**
+**App 2: NAS-Pfad (Service Auth, empfohlen; alternativ Bypass)**
 - Self-hosted, Domain `tunnel.munot.app`, Pfad `nas/*`
-- Policy mit Action **Bypass**, Include: Everyone
-- Der spezifischere Pfad gewinnt gegenüber App 1. Der Worker schützt `/nas/*` selbst per Bearer-Token.
+- Service Token anlegen (Access controls > Service credentials > Create), Client ID und Secret notieren (Secret wird nur einmal angezeigt)
+- Policy mit Action **Service Auth**, Include: Service Token = dieser Token
+- Der Poller sendet die Header `CF-Access-Client-Id` und `CF-Access-Client-Secret`, zusätzlich zum Bearer-Token des Workers
+- Einfachere Alternative: Policy mit Action **Bypass**, Include: Everyone (dann bleibt nur der Bearer-Token als Schutz)
+- Der spezifischere Pfad gewinnt gegenüber App 1.
 
 ## 3. wrangler.toml
 
@@ -44,8 +47,8 @@ Die Custom Domain `tunnel.munot.app` legt Wrangler automatisch an (Zone `munot.a
 ## 5. Test
 
 ```bash
-curl -H "Authorization: Bearer $NAS_TOKEN" https://tunnel.munot.app/nas/state
-curl -X POST -H "Authorization: Bearer $NAS_TOKEN" -H "Content-Type: application/json" \
+curl -H "Authorization: Bearer $NAS_TOKEN" -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" https://tunnel.munot.app/nas/state
+curl -X POST -H "Authorization: Bearer $NAS_TOKEN" -H "CF-Access-Client-Id: $CF_ID" -H "CF-Access-Client-Secret: $CF_SECRET" -H "Content-Type: application/json" \
   -d '{"tunnels":[{"tunnel_id":"erp","actual":"stopped"}]}' https://tunnel.munot.app/nas/heartbeat
 ```
 
@@ -58,8 +61,8 @@ Dann `https://tunnel.munot.app` im Browser öffnen: Google-Login, Karte "NAS" mi
 | `GET /` | Access-JWT | Seite |
 | `GET /api/tunnels` | Access-JWT | Zustand + Protokoll |
 | `POST /api/toggle` | Access-JWT, Origin-Check | `{tunnel_id, desired: "on"\|"off", minutes?}` |
-| `GET /nas/state` | Bearer | `{now, tunnels:[{tunnel_id, desired, expires_at}]}` |
-| `POST /nas/heartbeat` | Bearer | `{tunnels:[{tunnel_id, actual: "running"\|"stopped"}]}` |
+| `GET /nas/state` | Bearer (+ Access Service Token) | `{now, tunnels:[{tunnel_id, desired, expires_at}]}` |
+| `POST /nas/heartbeat` | Bearer (+ Access Service Token) | `{tunnels:[{tunnel_id, actual: "running"\|"stopped"}]}` |
 
 ## Verhalten
 
