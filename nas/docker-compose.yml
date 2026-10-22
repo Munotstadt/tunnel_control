@@ -1,0 +1,37 @@
+services:
+  # Fragt tunnel.munot.app ab und startet/stoppt die cf-tunnel-* Container.
+  poller:
+    image: python:3.12-alpine
+    container_name: tunnel-poller
+    restart: unless-stopped
+    command: ["python", "-u", "/app/poller.py"]
+    environment:
+      WORKER_URL: https://tunnel.munot.app
+      NAS_TOKEN: ${NAS_TOKEN}
+      POLL_SECONDS: "30"
+      FAIL_STOP_AFTER: "3"
+      TZ: Europe/Zurich
+    volumes:
+      - ./poller.py:/app/poller.py:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # Ein Block pro Tunnel. Name MUSS cf-tunnel-<tunnel_id> lauten (tunnel_id aus D1).
+  # restart "no": nach einem NAS-Neustart bleibt der Tunnel zu, bis er geoeffnet wird.
+  cf-tunnel-nas:
+    image: cloudflare/cloudflared:latest
+    container_name: cf-tunnel-nas
+    restart: "no"
+    command: tunnel --no-autoupdate run
+    network_mode: host
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN_NAS}
+
+  # Weiterer Tunnel (tunnel_id 'ha'): Block kopieren, Namen und Variable anpassen.
+  # cf-tunnel-ha:
+  #   image: cloudflare/cloudflared:latest
+  #   container_name: cf-tunnel-ha
+  #   restart: "no"
+  #   command: tunnel --no-autoupdate run
+  #   network_mode: host
+  #   environment:
+  #     TUNNEL_TOKEN: ${TUNNEL_TOKEN_HA}
